@@ -24,7 +24,8 @@
 	
 	<!-- Custom Components (New List)-->
 	<string name="component_listview_custom_creations">Custom Creations</string>
-	<string name="custom_creations_drone_control">Drone Control</string>
+	<string name="custom_creations_drone_control">Drone Control Basic</string>
+    <string name="custom_creations_drone_control_extended">Drone Control Extended</string>
 
     <!-- Component list -->
     <string name="component_listview_component">Component</string>

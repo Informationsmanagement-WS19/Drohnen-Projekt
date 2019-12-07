@@ -28,6 +28,7 @@ import com.dji.sdk.sample.demo.camera.XT2CameraView;
 import com.dji.sdk.sample.demo.datalocker.AccessLockerView;
 import com.dji.sdk.sample.demo.flightcontroller.CompassCalibrationView;
 import com.dji.sdk.sample.demo.flightcontroller.FlightAssistantPushDataView;
+import com.dji.sdk.sample.demo.flightcontroller.FlightCustomExtendedView;
 import com.dji.sdk.sample.demo.flightcontroller.FlightCustomView;
 import com.dji.sdk.sample.demo.flightcontroller.FlightHubView;
 import com.dji.sdk.sample.demo.flightcontroller.FlightLimitationView;
@@ -83,7 +84,8 @@ public class DemoListView extends FrameLayout {
 
         builder.addGroup(R.string.component_listview_custom_creations,
                          false,
-                new GroupItem(R.string.custom_creations_drone_control, FlightCustomView.class));
+                new GroupItem(R.string.custom_creations_drone_control, FlightCustomView.class),
+                new GroupItem(R.string.custom_creations_drone_control_extended, FlightCustomExtendedView.class));
 
         // Set-up ExpandableListView
         expandableListView = (ExpandableListView) view.findViewById(R.id.expandable_list);

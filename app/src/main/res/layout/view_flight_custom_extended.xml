@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/textview_simulator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Simulator is off."
+        android:textColor="@color/gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.654" />
+
+    <TextView
+        android:id="@+id/textview_virtual_stick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Virtual Stick enabled."
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.726" />
+
+    <TextView
+        android:id="@+id/textview_control_modes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Control Modes activated."
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.699" />
+
+    <Button
+        android:id="@+id/btn_enable_virtual_stick"
+        style="@style/common_button_grey"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="128dp"
+        android:layout_toLeftOf="@id/btn_disable_virtual_stick"
+        android:text="Enable Virtual Stick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.986"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.724" />
+
+    <Button
+        android:id="@+id/btn_disable_virtual_stick"
+        style="@style/common_button_grey"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:text="Disable Virtual Stick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.009"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.775" />
+
+    <Button
+        android:id="@+id/btn_activate_control_modes"
+        style="@style/common_button_grey"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@id/btn_disable_virtual_stick"
+        android:text="Enable Control Modes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.986"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.701" />
+
+    <Button
+        android:id="@+id/btn_deactivate_control_modes"
+        style="@style/common_button_grey"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/btn_activate_control_modes"
+        android:layout_marginTop="176dp"
+        android:layout_toRightOf="@id/btn_take_off"
+        android:text="Disable Control Modes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.009"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.6" />
+
+    <ToggleButton
+        android:id="@+id/btn_start_simulator"
+        style="@style/common_button_grey"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/btn_enable_virtual_stick"
+        android:layout_toLeftOf="@id/btn_take_off"
+        android:text="Start Simulator"
+        android:textOff="Start Simulator"
+        android:textOn="Stop Simulator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.009"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.625" />
+
+    <Button
+        android:id="@+id/btn_take_off"
+        style="@style/common_button"
+        android:layout_below="@+id/btn_disable_virtual_stick"
+        android:layout_alignLeft="@id/btn_disable_virtual_stick"
+        android:text="Take Off"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.806" />
+
+    <Button
+        android:id="@+id/btn_land"
+        style="@style/common_button_largerText"
+        android:layout_width="112dp"
+        android:layout_height="63dp"
+        android:layout_below="@+id/btn_take_off"
+        android:layout_alignLeft="@+id/btn_take_off"
+        android:text="Land"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.946" />
+
+    <Button
+        android:id="@+id/btn_shoot_photo"
+        style="@style/common_button_red"
+        android:layout_below="@+id/btn_deactivate_control_modes"
+        android:layout_toRightOf="@+id/btn_land"
+        android:text="Shoot photo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.479" />
+
+    <com.dji.sdk.sample.internal.utils.OnScreenJoystick
+    android:id="@+id/directionJoystickRight"
+    android:layout_width="130dp"
+    android:layout_height="130dp"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentBottom="true"
+    android:background="@mipmap/joystick_bg"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.01"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.995" />
+
+<com.dji.sdk.sample.internal.utils.OnScreenJoystick
+    android:id="@+id/directionJoystickLeft"
+    android:layout_width="130dp"
+    android:layout_height="130dp"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentBottom="true"
+    android:background="@mipmap/joystick_bg"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.982"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.995" />
+
+<TextureView
+    android:id="@+id/video_previewer"
+    android:layout_width="387dp"
+    android:layout_height="226dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.102" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
