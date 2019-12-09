@@ -25,6 +25,7 @@ import com.dji.sdk.sample.internal.view.PresentableView;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.simulator.InitializationData;
@@ -41,7 +42,7 @@ import dji.keysdk.KeyManager;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.flightcontroller.Simulator;
 
-// Imports für Camera View
+// Imports Camera/ Video
 import android.app.Service;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
@@ -53,6 +54,9 @@ import android.widget.FrameLayout;
 import com.dji.sdk.sample.R;
 import dji.sdk.camera.VideoFeeder;
 import dji.sdk.codec.DJICodecManager;
+import dji.common.camera.SettingsDefinitions;
+import dji.common.error.DJIError;
+import dji.common.util.CommonCallbacks;
 
 
 /**
@@ -74,12 +78,28 @@ public class FlightCustomExtendedView extends RelativeLayout
     private Button btnTakeOff;
     private Button btnLand;
     private Button btnShootPhoto;
+    private Button btnStartVideo;
+    private Button btnStopVideo;
+    private Button btnMissions;
+    private Button btnMedia;
 
+    //Variables Camera
+    private VideoFeeder.VideoDataListener videoDataListener = null;
+    private DJICodecManager codecManager = null;
+
+    //Variables video function
+    private Timer timer = new Timer();
+    private long timeCounter = 0;
+    private long hours = 0;
+    private long minutes = 0;
+    private long seconds = 0;
+    private String time = "";
 
 
     private TextView textView;
     private TextView textView_Controls;
     private TextView textView_VirtualSticks;
+    private TextView textView_Video;
 
     private OnScreenJoystick screenJoystickRight;
     private OnScreenJoystick screenJoystickLeft;
@@ -92,10 +112,6 @@ public class FlightCustomExtendedView extends RelativeLayout
     private float yaw;
     private float throttle;
     private FlightControllerKey isSimulatorActived;
-
-    //Variablen für CameraView
-    private VideoFeeder.VideoDataListener videoDataListener = null;
-    private DJICodecManager codecManager = null;
 
 
     public FlightCustomExtendedView(Context context) {
@@ -152,12 +168,17 @@ public class FlightCustomExtendedView extends RelativeLayout
         btnTakeOff = (Button) findViewById(R.id.btn_take_off);
         btnLand = (Button) findViewById(R.id.btn_land);
         btnShootPhoto = (Button) findViewById(R.id.btn_shoot_photo);
+        btnStartVideo = (Button) findViewById(R.id.btn_start_video);
+        btnStopVideo = (Button) findViewById(R.id.btn_stop_video);
+        btnMissions = (Button) findViewById(R.id.btn_missions);
+        btnMedia = (Button) findViewById(R.id.btn_media);
 
         btnSimulator = (ToggleButton) findViewById(R.id.btn_start_simulator);
 
         textView = (TextView) findViewById(R.id.textview_simulator);
         textView_Controls = (TextView) findViewById(R.id.textview_control_modes);
         textView_VirtualSticks = (TextView) findViewById(R.id.textview_virtual_stick);
+        textView_Video = (TextView) findViewById(R.id.textview_video_record);
 
         screenJoystickRight = (OnScreenJoystick) findViewById(R.id.directionJoystickRight);
         screenJoystickLeft = (OnScreenJoystick) findViewById(R.id.directionJoystickLeft);
@@ -172,6 +193,10 @@ public class FlightCustomExtendedView extends RelativeLayout
         btnLand.setOnClickListener(this);
         btnSimulator.setOnCheckedChangeListener(FlightCustomExtendedView.this);
         btnShootPhoto.setOnClickListener(this);
+        btnStartVideo.setOnClickListener(this);
+        btnStopVideo.setOnClickListener(this);
+        btnMissions.setOnClickListener(this);
+        btnMedia.setOnClickListener(this);
 
         Boolean isSimulatorOn = (Boolean) KeyManager.getInstance().getValue(isSimulatorActived);
         if (isSimulatorOn != null && isSimulatorOn) {
@@ -327,6 +352,7 @@ public class FlightCustomExtendedView extends RelativeLayout
         screenJoystickRight.setJoystickListener(null);
     }
 
+    //OnClick cases for each button
     @Override
     public void onClick(View v) {
         FlightController flightController = ModuleVerificationUtil.getFlightController();
@@ -419,6 +445,86 @@ public class FlightCustomExtendedView extends RelativeLayout
              *
              * break;
              */
+
+            case R.id.btn_start_video:
+
+                //Video mode for camera
+                if (ModuleVerificationUtil.isCameraModuleAvailable()) {
+                    DJISampleApplication.getProductInstance()
+                            .getCamera()
+                            .setMode(SettingsDefinitions.CameraMode.RECORD_VIDEO,
+                                    new CommonCallbacks.CompletionCallback() {
+                                        @Override
+                                        public void onResult(DJIError djiError) {
+                                            ToastUtils.setResultToToast("SetCameraMode to recordVideo");
+                                        }
+                                    });
+                }
+
+                //Start recording
+                textView_Video.setText("Recording: 00:00:00");
+                if (ModuleVerificationUtil.isCameraModuleAvailable()) {
+                    DJISampleApplication.getProductInstance()
+                            .getCamera()
+                            .startRecordVideo(new CommonCallbacks.CompletionCallback() {
+                                @Override
+                                public void onResult(DJIError djiError) {
+                                    //success so, start recording
+                                    if (null == djiError) {
+                                        ToastUtils.setResultToToast("Start record");
+                                        timer = new Timer();
+                                        timer.schedule(new TimerTask() {
+                                            @Override
+                                            public void run() {
+                                                timeCounter = timeCounter + 1;
+                                                hours = TimeUnit.MILLISECONDS.toHours(timeCounter);
+                                                minutes =
+                                                        TimeUnit.MILLISECONDS.toMinutes(timeCounter) - (hours * 60);
+                                                seconds = TimeUnit.MILLISECONDS.toSeconds(timeCounter) - ((hours
+                                                        * 60
+                                                        * 60) + (minutes * 60));
+                                                time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+                                                textView_Video.setText("Recording:" + time);
+                                            }
+                                        }, 0, 1);
+                                    }
+                                }
+                            });
+                }
+
+                break; //End: Start recording Video
+
+
+            case R.id.btn_stop_video:
+
+                //Photo mode for camera
+                if (ModuleVerificationUtil.isCameraModuleAvailable()) {
+                    DJISampleApplication.getProductInstance()
+                            .getCamera()
+                            .setMode(SettingsDefinitions.CameraMode.SHOOT_PHOTO,
+                                    new CommonCallbacks.CompletionCallback() {
+                                        @Override
+                                        public void onResult(DJIError djiError) {
+                                            ToastUtils.setResultToToast("SetCameraMode to shootPhoto");
+                                        }
+                                    });
+                }
+
+                if (ModuleVerificationUtil.isCameraModuleAvailable()) {
+                    DJISampleApplication.getProductInstance()
+                            .getCamera()
+                            .stopRecordVideo(new CommonCallbacks.CompletionCallback() {
+                                @Override
+                                public void onResult(DJIError djiError) {
+                                    ToastUtils.setResultToToast("StopRecord");
+                                    textView_Video.setText("00:00:00");
+                                    timer.cancel();
+                                    timeCounter = 0;
+                                }
+                            });
+                }
+
+                break; //End: Stop recording video
 
 
             default:
