@@ -1,6 +1,7 @@
 package com.dji.sdk.sample.demo.flightcontroller;
 
-import android.app.Service;
+
+import  android.app.Service;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,6 +115,8 @@ public class FlightCustomExtendedView extends RelativeLayout
     private FlightControllerKey isSimulatorActived;
 
 
+
+
     public FlightCustomExtendedView(Context context) {
         super(context);
         init(context);
@@ -225,6 +228,12 @@ public class FlightCustomExtendedView extends RelativeLayout
         initSDKCallback();
 
     }
+
+    private boolean isModuleAvailable() {
+        return (null != DJISampleApplication.getProductInstance()) && (null != DJISampleApplication.getProductInstance()
+                .getCamera());
+    }
+
 
     private void initSDKCallback() {
         try {
@@ -439,12 +448,28 @@ public class FlightCustomExtendedView extends RelativeLayout
 
                 break;
 
-            /**
-             * case R.id.btn_shoot_photo:
-             *
-             *
-             * break;
-             */
+
+             case R.id.btn_shoot_photo:
+                 //Shoot Photo Button
+                 if (isModuleAvailable()) {
+
+                     DJISampleApplication.getProductInstance()
+                             .getCamera()
+                             .startShootPhoto(new CommonCallbacks.CompletionCallback() {
+                                 @Override
+                                 public void onResult(DJIError djiError) {
+                                     if (null == djiError) {
+                                         ToastUtils.setResultToToast("take photo: success");
+                                         //getContext().getString(R.string.success
+                                     } else {
+                                         ToastUtils.setResultToToast(djiError.getDescription());
+                                     }
+
+                                 }
+                             });
+                 }
+             break;
+
 
             case R.id.btn_start_video:
 
