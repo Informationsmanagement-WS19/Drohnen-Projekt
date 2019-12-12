@@ -59,11 +59,11 @@ foreach ($alledateien as $datei){
 if ($datei != "." && $datei != ".."  && $datei != "_notes") {
 
 	//Datum und Uhrzeit ausgeben
-		$pfad =$gekürzterVerzeichnispfad .$datei;
+	  $pfad =$gekürzterVerzeichnispfad .$datei;
 	  $timestamp =  filemtime($pfad);  //filemtime zeigt die letzte Änderung der Datei
 	  $datum = date("d.m.Y",$timestamp);
 	  $uhrzeit = date("H:i:s",$timestamp);
-		$zeitpunkt = $datum . ' - '. $uhrzeit . ' Uhr';
+	  $zeitpunkt = $datum . ' - '. $uhrzeit . ' Uhr';
 	//	echo $zeitpunkt;
 
 			//Bildtypen sammeln
