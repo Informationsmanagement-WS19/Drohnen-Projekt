@@ -61,6 +61,7 @@ import dji.common.error.DJIError;
 import dji.common.util.CommonCallbacks;
 
 
+
 /**
  * Class for virtual stick.
  */
@@ -116,8 +117,6 @@ public class FlightCustomExtendedView extends RelativeLayout
     private FlightControllerKey isSimulatorActived;
 
 
-
-
     public FlightCustomExtendedView(Context context) {
         super(context);
         init(context);
@@ -133,6 +132,19 @@ public class FlightCustomExtendedView extends RelativeLayout
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         setUpListeners();
+
+        if (isModuleAvailable()) {
+
+            DJISampleApplication.getProductInstance()
+                    .getCamera()
+                    .setMode(SettingsDefinitions.CameraMode.SHOOT_PHOTO,
+                            new CommonCallbacks.CompletionCallback() {
+                                @Override
+                                public void onResult(DJIError djiError) {
+
+                                }
+                            });
+        }
     }
 
     @Override
@@ -186,7 +198,6 @@ public class FlightCustomExtendedView extends RelativeLayout
 
         screenJoystickRight = (OnScreenJoystick) findViewById(R.id.directionJoystickRight);
         screenJoystickLeft = (OnScreenJoystick) findViewById(R.id.directionJoystickLeft);
-
 
 
         btnEnableVirtualStick.setOnClickListener(this);
@@ -450,26 +461,9 @@ public class FlightCustomExtendedView extends RelativeLayout
                 break;
 
 
-             case R.id.btn_shoot_photo:
-                 //Shoot Photo Button
-                 if (isModuleAvailable()) {
-
-                     DJISampleApplication.getProductInstance()
-                             .getCamera()
-                             .startShootPhoto(new CommonCallbacks.CompletionCallback() {
-                                 @Override
-                                 public void onResult(DJIError djiError) {
-                                     if (null == djiError) {
-                                         ToastUtils.setResultToToast("take photo: success");
-                                         //getContext().getString(R.string.success
-                                     } else {
-                                         ToastUtils.setResultToToast(djiError.getDescription());
-                                     }
-
-                                 }
-                             });
-                 }
-             break;
+            case R.id.btn_shoot_photo:
+                shootPhoto();
+                break;
 
 
             case R.id.btn_start_video:
@@ -600,7 +594,6 @@ public class FlightCustomExtendedView extends RelativeLayout
     }
 
 
-
     @Override
     public int getDescription() {
         return R.string.flight_controller_listview_virtual_stick;
@@ -625,5 +618,41 @@ public class FlightCustomExtendedView extends RelativeLayout
                                 });
             }
         }
+    }
+
+
+    private void shootPhoto() {
+
+        //Shoot Photo Button
+        if (isModuleAvailable()) {
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    btnShootPhoto.setEnabled(false);
+                }
+            });
+
+            DJISampleApplication.getProductInstance()
+                    .getCamera()
+                    .startShootPhoto(new CommonCallbacks.CompletionCallback() {
+                        @Override
+                        public void onResult(DJIError djiError) {
+                            if (null == djiError) {
+                                ToastUtils.setResultToToast("take photo: success");
+                                //getContext().getString(R.string.success
+                            } else {
+                                ToastUtils.setResultToToast(djiError.getDescription());
+                            }
+                            post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    btnShootPhoto.setEnabled(true);
+                                }
+                            });
+
+                        }
+                    });
+        }
+
     }
 }
