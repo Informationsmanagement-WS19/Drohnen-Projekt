@@ -17,11 +17,9 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 
 import com.dji.sdk.sample.R;
-import com.dji.sdk.sample.internal.OnScreenJoystickListener;
 import com.dji.sdk.sample.internal.controller.DJISampleApplication;
 import com.dji.sdk.sample.internal.utils.DialogUtils;
 import com.dji.sdk.sample.internal.utils.ModuleVerificationUtil;
-import com.dji.sdk.sample.internal.utils.OnScreenJoystick;
 import com.dji.sdk.sample.internal.utils.ToastUtils;
 import com.dji.sdk.sample.internal.view.PresentableView;
 
@@ -68,16 +66,22 @@ import dji.common.util.CommonCallbacks;
 public class FlightCustomExtendedView extends RelativeLayout
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, PresentableView, TextureView.SurfaceTextureListener {
 
+    //Flags assistance systems
     private boolean yawControlModeFlag = true;
     private boolean rollPitchControlModeFlag = true;
     private boolean verticalControlModeFlag = true;
     private boolean horizontalCoordinateFlag = true;
 
+    //Variables buttons
     private Button btnEnableVirtualStick;
     private Button btnDisableVirtualStick;
     private Button btnActivateControlModes;
     private Button btnDeactivateControlModes;
     private ToggleButton btnSimulator;
+    private ToggleButton btnControlModes;
+    private ToggleButton btnVirtualStick;
+    private ToggleButton btnCameraMode;
+    private ToggleButton btnRecordVideo;
     private Button btnTakeOff;
     private Button btnLand;
     private Button btnShootPhoto;
@@ -98,17 +102,16 @@ public class FlightCustomExtendedView extends RelativeLayout
     private long seconds = 0;
     private String time = "";
 
-
+    //Variables screen texts
     private TextView textView;
     private TextView textView_Controls;
     private TextView textView_VirtualSticks;
     private TextView textView_Video;
 
-    private OnScreenJoystick screenJoystickRight;
-    private OnScreenJoystick screenJoystickLeft;
-
     private Timer sendVirtualStickDataTimer;
     private SendVirtualStickDataTask sendVirtualStickDataTask;
+
+    FlightController flightController = ModuleVerificationUtil.getFlightController();
 
     private float pitch;
     private float roll;
@@ -176,6 +179,7 @@ public class FlightCustomExtendedView extends RelativeLayout
         isSimulatorActived = FlightControllerKey.create(FlightControllerKey.IS_SIMULATOR_ACTIVE);
     }
 
+    //Start initUI-------------------------------------------------------------
     private void initUI() {
         btnEnableVirtualStick = (Button) findViewById(R.id.btn_enable_virtual_stick);
         btnDisableVirtualStick = (Button) findViewById(R.id.btn_disable_virtual_stick);
@@ -190,14 +194,14 @@ public class FlightCustomExtendedView extends RelativeLayout
         btnMedia = (Button) findViewById(R.id.btn_media);
 
         btnSimulator = (ToggleButton) findViewById(R.id.btn_start_simulator);
+        btnControlModes = (ToggleButton) findViewById(R.id.btn_control_modes);
+        btnVirtualStick = (ToggleButton) findViewById(R.id.btn_virtual_stick);
+        btnCameraMode = (ToggleButton) findViewById(R.id.btn_camera_mode);
 
         textView = (TextView) findViewById(R.id.textview_simulator);
         textView_Controls = (TextView) findViewById(R.id.textview_control_modes);
         textView_VirtualSticks = (TextView) findViewById(R.id.textview_virtual_stick);
         textView_Video = (TextView) findViewById(R.id.textview_video_record);
-
-        screenJoystickRight = (OnScreenJoystick) findViewById(R.id.directionJoystickRight);
-        screenJoystickLeft = (OnScreenJoystick) findViewById(R.id.directionJoystickLeft);
 
 
         btnEnableVirtualStick.setOnClickListener(this);
@@ -207,11 +211,14 @@ public class FlightCustomExtendedView extends RelativeLayout
         btnTakeOff.setOnClickListener(this);
         btnLand.setOnClickListener(this);
         btnSimulator.setOnCheckedChangeListener(FlightCustomExtendedView.this);
+
         btnShootPhoto.setOnClickListener(this);
         btnStartVideo.setOnClickListener(this);
         btnStopVideo.setOnClickListener(this);
         btnMissions.setOnClickListener(this);
         btnMedia.setOnClickListener(this);
+
+
 
         Boolean isSimulatorOn = (Boolean) KeyManager.getInstance().getValue(isSimulatorActived);
         if (isSimulatorOn != null && isSimulatorOn) {
@@ -220,7 +227,59 @@ public class FlightCustomExtendedView extends RelativeLayout
         }
 
 
-        //Camera Feed
+
+        // Toggle Button: Control Modes
+        btnControlModes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                   disableControlModes();
+                } else {
+                    enableControlModes();
+                }
+            }
+        });
+
+
+
+        // Toggle Button: Virtual Stick
+        btnVirtualStick.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    disableVirtualStick();
+                } else {
+                    enableVirtualStick();
+                }
+            }
+        });
+
+
+
+        //Toggle Button: Camera Mode
+        btnCameraMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    toVideoMode();
+                } else {
+                    toPhotoMode();
+                }
+            }
+        });
+
+
+
+        // Toggle Button: Video Record
+        btnRecordVideo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    startRecording();
+                } else {
+                    stopRecording();
+                }
+            }
+        });
+
+
+        // Camera Feed
         TextureView mVideoSurface = (TextureView) findViewById(R.id.video_previewer);
 
         if (null != mVideoSurface) {
@@ -238,14 +297,14 @@ public class FlightCustomExtendedView extends RelativeLayout
             };
         }
         initSDKCallback();
+        toPhotoMode();
+    }// END initUI------------------------------------------------------------
 
-    }
 
     private boolean isModuleAvailable() {
         return (null != DJISampleApplication.getProductInstance()) && (null != DJISampleApplication.getProductInstance()
                 .getCamera());
     }
-
 
     private void initSDKCallback() {
         try {
@@ -304,64 +363,6 @@ public class FlightCustomExtendedView extends RelativeLayout
             ToastUtils.setResultToToast("Disconnected!");
         }
 
-        screenJoystickLeft.setJoystickListener(new OnScreenJoystickListener() {
-
-            @Override
-            public void onTouch(OnScreenJoystick joystick, float pX, float pY) {
-                if (Math.abs(pX) < 0.02) {
-                    pX = 0;
-                }
-
-                if (Math.abs(pY) < 0.02) {
-                    pY = 0;
-                }
-                float pitchJoyControlMaxSpeed = 10;
-                float rollJoyControlMaxSpeed = 10;
-
-                if (horizontalCoordinateFlag) {
-                    if (rollPitchControlModeFlag) {
-                        pitch = (float) (pitchJoyControlMaxSpeed * pX);
-
-                        roll = (float) (rollJoyControlMaxSpeed * pY);
-                    } else {
-                        pitch = -(float) (pitchJoyControlMaxSpeed * pY);
-
-                        roll = (float) (rollJoyControlMaxSpeed * pX);
-                    }
-                }
-
-                if (null == sendVirtualStickDataTimer) {
-                    sendVirtualStickDataTask = new SendVirtualStickDataTask();
-                    sendVirtualStickDataTimer = new Timer();
-                    sendVirtualStickDataTimer.schedule(sendVirtualStickDataTask, 100, 200);
-                }
-            }
-        });
-
-        screenJoystickRight.setJoystickListener(new OnScreenJoystickListener() {
-
-            @Override
-            public void onTouch(OnScreenJoystick joystick, float pX, float pY) {
-                if (Math.abs(pX) < 0.02) {
-                    pX = 0;
-                }
-
-                if (Math.abs(pY) < 0.02) {
-                    pY = 0;
-                }
-                float verticalJoyControlMaxSpeed = 2;
-                float yawJoyControlMaxSpeed = 3;
-
-                yaw = yawJoyControlMaxSpeed * pX;
-                throttle = verticalJoyControlMaxSpeed * pY;
-
-                if (null == sendVirtualStickDataTimer) {
-                    sendVirtualStickDataTask = new SendVirtualStickDataTask();
-                    sendVirtualStickDataTimer = new Timer();
-                    sendVirtualStickDataTimer.schedule(sendVirtualStickDataTask, 0, 200);
-                }
-            }
-        });
     }
 
     private void tearDownListeners() {
@@ -369,95 +370,43 @@ public class FlightCustomExtendedView extends RelativeLayout
         if (simulator != null) {
             simulator.setStateCallback(null);
         }
-        screenJoystickLeft.setJoystickListener(null);
-        screenJoystickRight.setJoystickListener(null);
     }
 
     //OnClick cases for each button
     @Override
     public void onClick(View v) {
-        FlightController flightController = ModuleVerificationUtil.getFlightController();
-        if (flightController == null) {
+        FlightController flightControllerClick = ModuleVerificationUtil.getFlightController();
+        if (flightControllerClick == null) {
             return;
         }
         switch (v.getId()) {
+
             case R.id.btn_enable_virtual_stick:
-
-                textView_VirtualSticks.setText("Virtual Stick enabled.");
-
-                flightController.setVirtualStickModeEnabled(true, new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(DJIError djiError) {
-                        DialogUtils.showDialogBasedOnError(getContext(), djiError);
-                    }
-                });
+                enableVirtualStick();
                 break;
 
             case R.id.btn_disable_virtual_stick:
-
-                textView_VirtualSticks.setText("Virtual Stick disabled.");
-
-                flightController.setVirtualStickModeEnabled(false, new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(DJIError djiError) {
-                        DialogUtils.showDialogBasedOnError(getContext(), djiError);
-                    }
-                });
+                disableVirtualStick();
                 break;
+
 
             case R.id.btn_activate_control_modes:
-
-                textView_Controls.setText("Control Modes activated.");
-
-                flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
-                flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
-                flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
-                flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
-
-                horizontalCoordinateFlag = true;
-                verticalControlModeFlag = true;
-                yawControlModeFlag = true;
-                rollPitchControlModeFlag = true;
-
+                enableControlModes();
                 break;
 
+
             case R.id.btn_deactivate_control_modes:
-
-                textView_Controls.setText("Control Modes deactivated.");
-
-                flightController.setRollPitchControlMode(RollPitchControlMode.ANGLE);
-                flightController.setYawControlMode(YawControlMode.ANGLE);
-                flightController.setVerticalControlMode(VerticalControlMode.POSITION);
-                flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.GROUND);
-
-                rollPitchControlModeFlag = false;
-                yawControlModeFlag = false;
-                verticalControlModeFlag = false;
-                horizontalCoordinateFlag = false;
-
+                disableControlModes();
                 break;
 
 
             case R.id.btn_take_off:
-
-                flightController.startTakeoff(new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(DJIError djiError) {
-                        DialogUtils.showDialogBasedOnError(getContext(), djiError);
-                    }
-                });
-
+                takeOff();
                 break;
 
+
             case R.id.btn_land:
-
-                flightController.startLanding(new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(DJIError djiError) {
-                        DialogUtils.showDialogBasedOnError(getContext(), djiError);
-                    }
-                });
-
+                autoLand();
                 break;
 
 
@@ -467,84 +416,16 @@ public class FlightCustomExtendedView extends RelativeLayout
 
 
             case R.id.btn_start_video:
-
-                //Video mode for camera
-                if (ModuleVerificationUtil.isCameraModuleAvailable()) {
-                    DJISampleApplication.getProductInstance()
-                            .getCamera()
-                            .setMode(SettingsDefinitions.CameraMode.RECORD_VIDEO,
-                                    new CommonCallbacks.CompletionCallback() {
-                                        @Override
-                                        public void onResult(DJIError djiError) {
-                                            ToastUtils.setResultToToast("SetCameraMode to recordVideo");
-                                        }
-                                    });
-                }
-
-                //Start recording
-                textView_Video.setText("Recording: 00:00:00");
-                if (ModuleVerificationUtil.isCameraModuleAvailable()) {
-                    DJISampleApplication.getProductInstance()
-                            .getCamera()
-                            .startRecordVideo(new CommonCallbacks.CompletionCallback() {
-                                @Override
-                                public void onResult(DJIError djiError) {
-                                    //success so, start recording
-                                    if (null == djiError) {
-                                        ToastUtils.setResultToToast("Start record");
-                                        timer = new Timer();
-                                        timer.schedule(new TimerTask() {
-                                            @Override
-                                            public void run() {
-                                                timeCounter = timeCounter + 1;
-                                                hours = TimeUnit.MILLISECONDS.toHours(timeCounter);
-                                                minutes =
-                                                        TimeUnit.MILLISECONDS.toMinutes(timeCounter) - (hours * 60);
-                                                seconds = TimeUnit.MILLISECONDS.toSeconds(timeCounter) - ((hours
-                                                        * 60
-                                                        * 60) + (minutes * 60));
-                                                time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-                                                textView_Video.setText("Recording:" + time);
-                                            }
-                                        }, 0, 1);
-                                    }
-                                }
-                            });
-                }
-
-                break; //End: Start recording Video
+                toVideoMode();
+                startRecording();
+                break;
 
 
             case R.id.btn_stop_video:
+                stopRecording();
+                toPhotoMode();
+                break;
 
-                //Photo mode for camera
-                if (ModuleVerificationUtil.isCameraModuleAvailable()) {
-                    DJISampleApplication.getProductInstance()
-                            .getCamera()
-                            .setMode(SettingsDefinitions.CameraMode.SHOOT_PHOTO,
-                                    new CommonCallbacks.CompletionCallback() {
-                                        @Override
-                                        public void onResult(DJIError djiError) {
-                                            ToastUtils.setResultToToast("SetCameraMode to shootPhoto");
-                                        }
-                                    });
-                }
-
-                if (ModuleVerificationUtil.isCameraModuleAvailable()) {
-                    DJISampleApplication.getProductInstance()
-                            .getCamera()
-                            .stopRecordVideo(new CommonCallbacks.CompletionCallback() {
-                                @Override
-                                public void onResult(DJIError djiError) {
-                                    ToastUtils.setResultToToast("StopRecord");
-                                    textView_Video.setText("00:00:00");
-                                    timer.cancel();
-                                    timeCounter = 0;
-                                }
-                            });
-                }
-
-                break; //End: Stop recording video
 
             case R.id.btn_missions:
                 //This might fail, because of getContext() instead of "this"!
@@ -621,8 +502,9 @@ public class FlightCustomExtendedView extends RelativeLayout
     }
 
 
-    private void shootPhoto() {
 
+    // Shoot single photo
+    private void shootPhoto() {
         //Shoot Photo Button
         if (isModuleAvailable()) {
             post(new Runnable() {
@@ -653,6 +535,189 @@ public class FlightCustomExtendedView extends RelativeLayout
                         }
                     });
         }
+    }
 
+
+
+    // Activate Video Mode
+    private void toVideoMode(){
+        if (ModuleVerificationUtil.isCameraModuleAvailable()) {
+            DJISampleApplication.getProductInstance()
+                    .getCamera()
+                    .setMode(SettingsDefinitions.CameraMode.RECORD_VIDEO,
+                            new CommonCallbacks.CompletionCallback() {
+                                @Override
+                                public void onResult(DJIError djiError) {
+                                    ToastUtils.setResultToToast("SetCameraMode to recordVideo");
+                                }
+                            });
+        }
+        btnShootPhoto.setClickable(false);
+        btnRecordVideo.setClickable(true);
+        btnStartVideo.setClickable(true);
+        btnStopVideo.setClickable(true);
+    }
+
+
+
+    // Activate Photo Mode
+    private void toPhotoMode(){
+        if (ModuleVerificationUtil.isCameraModuleAvailable()) {
+            DJISampleApplication.getProductInstance()
+                    .getCamera()
+                    .setMode(SettingsDefinitions.CameraMode.SHOOT_PHOTO,
+                            new CommonCallbacks.CompletionCallback() {
+                                @Override
+                                public void onResult(DJIError djiError) {
+                                    ToastUtils.setResultToToast("SetCameraMode to shootPhoto");
+                                }
+                            });
+        }
+        btnRecordVideo.setClickable(false);
+        btnStartVideo.setClickable(false);
+        btnStopVideo.setClickable(false);
+        btnShootPhoto.setClickable(true);
+    }
+
+
+
+    // Start recording a video
+    private void startRecording(){
+        textView_Video.setText("Recording: 00:00:00");
+        btnCameraMode.setClickable(false);
+        if (ModuleVerificationUtil.isCameraModuleAvailable()) {
+            DJISampleApplication.getProductInstance()
+                    .getCamera()
+                    .startRecordVideo(new CommonCallbacks.CompletionCallback() {
+                        @Override
+                        public void onResult(DJIError djiError) {
+                            //success so, start recording
+                            if (null == djiError) {
+                                ToastUtils.setResultToToast("Start record");
+                                timer = new Timer();
+                                timer.schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        timeCounter = timeCounter + 1;
+                                        hours = TimeUnit.MILLISECONDS.toHours(timeCounter);
+                                        minutes =
+                                                TimeUnit.MILLISECONDS.toMinutes(timeCounter) - (hours * 60);
+                                        seconds = TimeUnit.MILLISECONDS.toSeconds(timeCounter) - ((hours
+                                                * 60
+                                                * 60) + (minutes * 60));
+                                        time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+                                        textView_Video.setText("Recording:" + time);
+                                    }
+                                }, 0, 1);
+                            }
+                        }
+                    });
+        }
+    }
+
+
+
+    //Stop recording the video
+    private void stopRecording(){
+        if (ModuleVerificationUtil.isCameraModuleAvailable()) {
+            DJISampleApplication.getProductInstance()
+                    .getCamera()
+                    .stopRecordVideo(new CommonCallbacks.CompletionCallback() {
+                        @Override
+                        public void onResult(DJIError djiError) {
+                            ToastUtils.setResultToToast("StopRecord");
+                            textView_Video.setText("00:00:00");
+                            timer.cancel();
+                            timeCounter = 0;
+                        }
+                    });
+        }
+        btnCameraMode.setClickable(true);
+    }
+
+
+
+    // Enable virtual stick
+    private void enableVirtualStick(){
+        textView_VirtualSticks.setText("Virtual Stick enabled.");
+
+        flightController.setVirtualStickModeEnabled(true, new CommonCallbacks.CompletionCallback() {
+            @Override
+            public void onResult(DJIError djiError) {
+                DialogUtils.showDialogBasedOnError(getContext(), djiError);
+            }
+        });
+    }
+
+
+
+    // Disable virtual stick
+    private void disableVirtualStick(){
+        textView_VirtualSticks.setText("Virtual Stick disabled.");
+
+        flightController.setVirtualStickModeEnabled(false, new CommonCallbacks.CompletionCallback() {
+            @Override
+            public void onResult(DJIError djiError) {
+                DialogUtils.showDialogBasedOnError(getContext(), djiError);
+            }
+        });
+    }
+
+
+
+    // Enable control modes
+    private void enableControlModes(){
+        textView_Controls.setText("Control Modes activated.");
+
+        flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
+        flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
+        flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
+        flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
+
+        horizontalCoordinateFlag = true;
+        verticalControlModeFlag = true;
+        yawControlModeFlag = true;
+        rollPitchControlModeFlag = true;
+    }
+
+
+
+    // Disable control modes
+    private void disableControlModes(){
+        textView_Controls.setText("Control Modes deactivated.");
+
+        flightController.setRollPitchControlMode(RollPitchControlMode.ANGLE);
+        flightController.setYawControlMode(YawControlMode.ANGLE);
+        flightController.setVerticalControlMode(VerticalControlMode.POSITION);
+        flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.GROUND);
+
+        rollPitchControlModeFlag = false;
+        yawControlModeFlag = false;
+        verticalControlModeFlag = false;
+        horizontalCoordinateFlag = false;
+    }
+
+
+
+    // Take off
+    private void takeOff(){
+        flightController.startTakeoff(new CommonCallbacks.CompletionCallback() {
+            @Override
+            public void onResult(DJIError djiError) {
+                DialogUtils.showDialogBasedOnError(getContext(), djiError);
+            }
+        });
+    }
+
+
+
+    // Land
+    private void autoLand(){
+        flightController.startLanding(new CommonCallbacks.CompletionCallback() {
+            @Override
+            public void onResult(DJIError djiError) {
+                DialogUtils.showDialogBasedOnError(getContext(), djiError);
+            }
+        });
     }
 }
