@@ -197,6 +197,7 @@ public class FlightCustomExtendedView extends RelativeLayout
         btnControlModes = (ToggleButton) findViewById(R.id.btn_control_modes);
         btnVirtualStick = (ToggleButton) findViewById(R.id.btn_virtual_stick);
         btnCameraMode = (ToggleButton) findViewById(R.id.btn_camera_mode);
+        btnRecordVideo = (ToggleButton) findViewById(R.id.btn_record_video);
 
         textView = (TextView) findViewById(R.id.textview_simulator);
         textView_Controls = (TextView) findViewById(R.id.textview_control_modes);
@@ -298,6 +299,8 @@ public class FlightCustomExtendedView extends RelativeLayout
         }
         initSDKCallback();
         toPhotoMode();
+        enableVirtualStick();
+        enableControlModes();
     }// END initUI------------------------------------------------------------
 
 
@@ -667,7 +670,7 @@ public class FlightCustomExtendedView extends RelativeLayout
 
     // Enable control modes
     private void enableControlModes(){
-        textView_Controls.setText("Control Modes activated.");
+        textView_Controls.setText("Control Modes enabled.");
 
         flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
         flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
@@ -684,7 +687,7 @@ public class FlightCustomExtendedView extends RelativeLayout
 
     // Disable control modes
     private void disableControlModes(){
-        textView_Controls.setText("Control Modes deactivated.");
+        textView_Controls.setText("Control Modes disabled.");
 
         flightController.setRollPitchControlMode(RollPitchControlMode.ANGLE);
         flightController.setYawControlMode(YawControlMode.ANGLE);
