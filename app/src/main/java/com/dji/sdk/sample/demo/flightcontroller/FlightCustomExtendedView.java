@@ -3,6 +3,7 @@ package com.dji.sdk.sample.demo.flightcontroller;
 
 import  android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -551,6 +552,11 @@ public class FlightCustomExtendedView extends RelativeLayout
 
                 break; //End: Stop recording video
 
+            case R.id.btn_missions:
+                //This might fail, because of getContext() instead of "this"!
+                Intent intent = new Intent(getContext(), LoadMission.class);
+                getContext().startActivity(intent);
+                break;
 
             default:
                 break;
