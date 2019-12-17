@@ -46,6 +46,20 @@ android:layout_height="match_parent">
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.699" />
 
+    <TextView
+        android:id="@+id/textview_video_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="00:00:00"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.421" />
+
     <Button
         android:id="@+id/btn_enable_virtual_stick"
         style="@style/common_button_grey"
@@ -112,7 +126,6 @@ android:layout_height="match_parent">
         style="@style/common_button_grey"
         android:layout_width="105dp"
         android:layout_height="40dp"
-        android:layout_below="@id/btn_enable_virtual_stick"
         android:layout_toLeftOf="@id/btn_take_off"
         android:text="Start Simulator"
         android:textOff="Start Simulator"
@@ -123,6 +136,66 @@ android:layout_height="match_parent">
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.625" />
+
+    <ToggleButton
+        android:id="@+id/btn_control_modes"
+        style="@style/common_button_grey"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
+        android:text="Disable Control Modes"
+        android:textOff="Disable Control Modes"
+        android:textOn="Enable Control Modes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.009"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.994" />
+
+    <ToggleButton
+        android:id="@+id/btn_virtual_stick"
+        style="@style/common_button_grey"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
+        android:text="Disable Virtual Stick"
+        android:textOff="Disable Virtual Stick"
+        android:textOn="Enable Virtual Stick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.009"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.918" />
+
+    <ToggleButton
+        android:id="@+id/btn_camera_mode"
+        style="@style/common_button_red"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
+        android:text="Video mode"
+        android:textOff="Video mode"
+        android:textOn="Photo mode"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.986"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.994" />
+
+    <ToggleButton
+        android:id="@+id/btn_record_video"
+        style="@style/common_button_red"
+        android:layout_width="105dp"
+        android:layout_height="40dp"
+        android:text="Start Video"
+        android:textOff="Start Video"
+        android:textOn="Stop video"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.986"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.918" />
 
     <Button
         android:id="@+id/btn_take_off"
@@ -142,8 +215,6 @@ android:layout_height="match_parent">
         style="@style/common_button_largerText"
         android:layout_width="112dp"
         android:layout_height="63dp"
-        android:layout_below="@+id/btn_take_off"
-        android:layout_alignLeft="@+id/btn_take_off"
         android:text="Land"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -154,43 +225,58 @@ android:layout_height="match_parent">
     <Button
         android:id="@+id/btn_shoot_photo"
         style="@style/common_button_red"
-        android:layout_below="@+id/btn_deactivate_control_modes"
-        android:layout_toRightOf="@+id/btn_land"
         android:text="Shoot photo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_start_video"
+        style="@style/common_button_red"
+        android:text="Start Video"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.009"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.479" />
+        app:layout_constraintVertical_bias="0.457" />
 
-    <com.dji.sdk.sample.internal.utils.OnScreenJoystick
-    android:id="@+id/directionJoystickRight"
-    android:layout_width="130dp"
-    android:layout_height="130dp"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentBottom="true"
-    android:background="@mipmap/joystick_bg"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.01"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="0.995" />
+    <Button
+        android:id="@+id/btn_stop_video"
+        style="@style/common_button_red"
+        android:text="Stop Video"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.009"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.53" />
 
-<com.dji.sdk.sample.internal.utils.OnScreenJoystick
-    android:id="@+id/directionJoystickLeft"
-    android:layout_width="130dp"
-    android:layout_height="130dp"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentBottom="true"
-    android:background="@mipmap/joystick_bg"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.982"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="0.995" />
+
+    <Button
+        android:id="@+id/btn_media"
+        style="@style/common_button_red"
+        android:layout_toRightOf="@+id/btn_land"
+        android:text="Media"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.971"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.459" />
+
+    <Button
+        android:id="@+id/btn_missions"
+        style="@style/common_button_red"
+        android:text="Missions"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.971"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.53" />
 
 <TextureView
     android:id="@+id/video_previewer"

@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.dji.sdk.sample">
-
     <!-- SDK permission requirement -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -17,15 +16,14 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <uses-feature
         android:name="android.hardware.usb.host"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.usb.accessory"
-        android:required="true"/>
+        android:required="true" />
 
-
-    <!-- SDK requirement permission end -->
     <application
         android:name=".internal.controller.DJISampleApplication"
         android:allowBackup="true"
@@ -33,9 +31,14 @@
         android:label="@string/sample_app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity android:name=".demo.flightcontroller.StartMission"></activity>
+        <activity android:name=".demo.flightcontroller.LoadMission" />
 
-        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
         <!--
             ADD API_KEY HERE and make sure you
             are connected to the Internet before
@@ -43,39 +46,39 @@
         -->
         <meta-data
             android:name="com.dji.sdk.API_KEY"
-            android:value="0e4e25a9860e1f8dac28a1f7"/>
-
-        <!-- Required for receiving accessory attachment events.
-            This is necessary for product when connecting over USB. -->
-
+            android:value="0e4e25a9860e1f8dac28a1f7" />
+        <!--
+ Required for receiving accessory attachment events.
+            This is necessary for product when connecting over USB.
+        -->
         <activity
-            android:name="com.dji.sdk.sample.internal.controller.MainActivity"
-            android:label="@string/sample_app_name"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTop"
+            android:name=".internal.controller.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/sample_app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"/>
+                <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
             </intent-filter>
+
             <meta-data
                 android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
-                android:resource="@xml/accessory_filter"/>
+                android:resource="@xml/accessory_filter" />
         </activity>
-
         <activity
-            android:name="com.dji.sdk.sample.demo.payload.PayloadActivity"
+            android:name=".demo.payload.PayloadActivity"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="landscape"/>
-
+            android:screenOrientation="landscape" />
         <activity
-            android:name="com.dji.sdk.sample.demo.payload.PayloadSendGetDataActivity"
+            android:name=".demo.payload.PayloadSendGetDataActivity"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>
