@@ -27,7 +27,7 @@ div.file {
 	padding:4px 4px 4px 30px;
 }
 div.file.even{
-	background-color: #ebebeb;
+	background-color: #c9c9c9;
 }
 div.file a {
 	text-decoration:none;
@@ -45,10 +45,36 @@ $(document).ready(function() {
 </head>
 
 <body>
+
+	<?php
+
+	$db = new mysqli('localhost','TestUser', 'root', 'drohnenProjekt');
+
+	$erg = $db->query("Select * from flugdaten") or die($db->error);
+
+	if($erg->num_rows){
+	  '\n';
+		echo "<p>Datenvorhanden: Anzahl ";
+	  echo $erg->num_rows;
+	}
+
+	$datensatz = $erg->fetch_all(MYSQLI_ASSOC);
+
+	foreach($datensatz as $zeile) {
+	  echo '<br>';
+	  echo '<br> ' . "Nr " . $zeile['Nr'] ;
+	  echo '<br> ' . "Breitengrad " . $zeile['Breitengrad'] ;
+	  echo '<br> ' . "Längengrad " . $zeile['Längengrad'] ;
+		echo '<br> ' . "Hoehe " . $zeile['Hoehe'] ;
+	  echo '<br> ' . "Kameraposition " . $zeile['Kameraposition'] ;
+	}
+
+		?>
+
 <?php
 $ordner = "mixed";
 $alledateien = scandir($ordner);
-$verzeichnispfad = 'C:\xampp\htdocs\IM\mixed\ ';  //Verzeichnispfad mit Leerzeihen, da ansonsten das \ als letztes steht und somit der restliche Code nicht klappt
+$verzeichnispfad = 'C:\xampp\htdocs\IM\mixed\ ';       //Verzeichnispfad mit Leerzeihen, da ansonsten das \ als letztes steht und somit der restliche Code nicht klappt
 $gekürzterVerzeichnispfad = rtrim($verzeichnispfad);   //den Verzeichnispfad kürzen also das Leerzeichen entfernen
 
 foreach ($alledateien as $datei){
@@ -97,5 +123,8 @@ if ($datei != "." && $datei != ".."  && $datei != "_notes") {
 	};
  };
 ?>
+
+
+
 </body>
 </html>
