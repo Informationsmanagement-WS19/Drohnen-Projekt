@@ -1,10 +1,12 @@
-package com.dji.sdk.sample.demo.flightcontroller;
+package com.dji.sdk.sample.demo.CustomViews;
 
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.SurfaceTexture;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -12,11 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-
 import androidx.annotation.NonNull;
 
 import com.dji.sdk.sample.R;
-import com.dji.sdk.sample.demo.camera.FetchMediaView;
 import com.dji.sdk.sample.internal.controller.DJISampleApplication;
 import com.dji.sdk.sample.internal.utils.DialogUtils;
 import com.dji.sdk.sample.internal.utils.ModuleVerificationUtil;
@@ -27,6 +27,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+import dji.common.camera.SettingsDefinitions;
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.simulator.InitializationData;
 import dji.common.flightcontroller.simulator.SimulatorState;
@@ -39,31 +40,18 @@ import dji.common.model.LocationCoordinate2D;
 import dji.common.util.CommonCallbacks;
 import dji.keysdk.FlightControllerKey;
 import dji.keysdk.KeyManager;
+import dji.sdk.camera.VideoFeeder;
+import dji.sdk.codec.DJICodecManager;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.flightcontroller.Simulator;
 
 // Imports Camera/ Video
-import android.app.Service;
-import android.content.Context;
-import android.graphics.SurfaceTexture;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.TextureView;
-import android.widget.FrameLayout;
-import com.dji.sdk.sample.R;
-import dji.sdk.camera.VideoFeeder;
-import dji.sdk.codec.DJICodecManager;
-import dji.common.camera.SettingsDefinitions;
-import dji.common.error.DJIError;
-import dji.common.util.CommonCallbacks;
-
 
 
 /**
  * Class for virtual stick.
  */
-public class FlightCustomExtendedView extends RelativeLayout
+public class FlightCustomFinalView extends RelativeLayout
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, PresentableView, TextureView.SurfaceTextureListener {
 
     //Variables buttons
@@ -106,7 +94,7 @@ public class FlightCustomExtendedView extends RelativeLayout
     private FlightControllerKey isSimulatorActived;
 
 
-    public FlightCustomExtendedView(Context context) {
+    public FlightCustomFinalView(Context context) {
         super(context);
         init(context);
     }
@@ -154,7 +142,7 @@ public class FlightCustomExtendedView extends RelativeLayout
 
     private void init(Context context) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
-        layoutInflater.inflate(R.layout.view_flight_custom_extended, this, true);
+        layoutInflater.inflate(R.layout.view_flight_custom_final, this, true);
 
         initAllKeys();
         initUI();
@@ -185,7 +173,7 @@ public class FlightCustomExtendedView extends RelativeLayout
 
         btnTakeOff.setOnClickListener(this);
         btnLand.setOnClickListener(this);
-        btnSimulator.setOnCheckedChangeListener(FlightCustomExtendedView.this);
+        btnSimulator.setOnCheckedChangeListener(FlightCustomFinalView.this);
 
         btnShootPhoto.setOnClickListener(this);
         btnMissions.setOnClickListener(this);
@@ -374,8 +362,7 @@ public class FlightCustomExtendedView extends RelativeLayout
                 break;
 
             case R.id.btn_media:
-                Intent intentMedia = new Intent(getContext(), FetchMediaView.class);
-                getContext().startActivity(intentMedia);
+                ToastUtils.setResultToToast("Not implemented yet");
                 break;
 
             default:

@@ -1,4 +1,4 @@
-package com.dji.sdk.sample.demo.flightcontroller;
+package com.dji.sdk.sample.demo.CustomViews;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.dji.sdk.sample.R;
+import com.dji.sdk.sample.demo.flightcontroller.StartMission;
 
 import org.jetbrains.annotations.NotNull;
 
