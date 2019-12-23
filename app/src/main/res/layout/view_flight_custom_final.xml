@@ -114,7 +114,6 @@ android:layout_height="match_parent">
         android:id="@+id/btn_take_off"
         style="@style/common_button"
         android:layout_below="@+id/btn_disable_virtual_stick"
-        android:layout_alignLeft="@id/btn_disable_virtual_stick"
         android:text="Take Off"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

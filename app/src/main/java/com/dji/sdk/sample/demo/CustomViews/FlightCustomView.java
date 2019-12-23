@@ -1,4 +1,4 @@
-package com.dji.sdk.sample.demo.flightcontroller;
+package com.dji.sdk.sample.demo.CustomViews;
 
 import android.app.Service;
 import android.content.Context;

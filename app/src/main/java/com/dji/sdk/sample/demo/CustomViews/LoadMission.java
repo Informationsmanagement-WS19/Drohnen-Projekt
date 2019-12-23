@@ -1,4 +1,4 @@
-package com.dji.sdk.sample.demo.flightcontroller;
+package com.dji.sdk.sample.demo.CustomViews;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.dji.sdk.sample.R;
+import com.dji.sdk.sample.demo.flightcontroller.StartMission;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -63,7 +64,8 @@ public class LoadMission extends AppCompatActivity {
     public void getDataFromDB(){
         final TextView tv_errorMsg = findViewById(R.id.ifError);
         //Wenn über HotSpot verbunden: ipconfig-> Drahtlos-LAN-Adapter WLAN: -> letztes Mal: 192.168.1.2
-        String jsonURL = "http://10.0.2.2/droneapp/";
+        //String jsonURL = "http://10.0.2.2/droneapp/";
+        String jsonURL = "http://192.168.1.2/droneapp/";
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()

@@ -34,7 +34,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity android:name=".demo.flightcontroller.StartMission"></activity>
-        <activity android:name=".demo.flightcontroller.LoadMission" />
+        <activity android:name=".demo.CustomViews.LoadMission" />
 
         <uses-library
             android:name="org.apache.http.legacy"

@@ -1,18 +1,18 @@
-package com.dji.sdk.sample.demo.flightcontroller;
+package com.dji.sdk.sample.demo.CustomViews;
 
 
-import  android.app.Service;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.SurfaceTexture;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
-
 
 import androidx.annotation.NonNull;
 
@@ -27,6 +27,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+import dji.common.camera.SettingsDefinitions;
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.simulator.InitializationData;
 import dji.common.flightcontroller.simulator.SimulatorState;
@@ -39,44 +40,21 @@ import dji.common.model.LocationCoordinate2D;
 import dji.common.util.CommonCallbacks;
 import dji.keysdk.FlightControllerKey;
 import dji.keysdk.KeyManager;
+import dji.sdk.camera.VideoFeeder;
+import dji.sdk.codec.DJICodecManager;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.flightcontroller.Simulator;
 
 // Imports Camera/ Video
-import android.app.Service;
-import android.content.Context;
-import android.graphics.SurfaceTexture;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.TextureView;
-import android.widget.FrameLayout;
-import com.dji.sdk.sample.R;
-import dji.sdk.camera.VideoFeeder;
-import dji.sdk.codec.DJICodecManager;
-import dji.common.camera.SettingsDefinitions;
-import dji.common.error.DJIError;
-import dji.common.util.CommonCallbacks;
-
 
 
 /**
  * Class for virtual stick.
  */
-public class FlightCustomExtendedView extends RelativeLayout
+public class FlightCustomFinalView extends RelativeLayout
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, PresentableView, TextureView.SurfaceTextureListener {
 
-    //Flags assistance systems
-    private boolean yawControlModeFlag = true;
-    private boolean rollPitchControlModeFlag = true;
-    private boolean verticalControlModeFlag = true;
-    private boolean horizontalCoordinateFlag = true;
-
     //Variables buttons
-    private Button btnEnableVirtualStick;
-    private Button btnDisableVirtualStick;
-    private Button btnActivateControlModes;
-    private Button btnDeactivateControlModes;
     private ToggleButton btnSimulator;
     private ToggleButton btnControlModes;
     private ToggleButton btnVirtualStick;
@@ -85,8 +63,6 @@ public class FlightCustomExtendedView extends RelativeLayout
     private Button btnTakeOff;
     private Button btnLand;
     private Button btnShootPhoto;
-    private Button btnStartVideo;
-    private Button btnStopVideo;
     private Button btnMissions;
     private Button btnMedia;
 
@@ -104,8 +80,6 @@ public class FlightCustomExtendedView extends RelativeLayout
 
     //Variables screen texts
     private TextView textView;
-    private TextView textView_Controls;
-    private TextView textView_VirtualSticks;
     private TextView textView_Video;
 
     private Timer sendVirtualStickDataTimer;
@@ -120,7 +94,7 @@ public class FlightCustomExtendedView extends RelativeLayout
     private FlightControllerKey isSimulatorActived;
 
 
-    public FlightCustomExtendedView(Context context) {
+    public FlightCustomFinalView(Context context) {
         super(context);
         init(context);
     }
@@ -168,7 +142,7 @@ public class FlightCustomExtendedView extends RelativeLayout
 
     private void init(Context context) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
-        layoutInflater.inflate(R.layout.view_flight_custom_extended, this, true);
+        layoutInflater.inflate(R.layout.view_flight_custom_final, this, true);
 
         initAllKeys();
         initUI();
@@ -181,15 +155,9 @@ public class FlightCustomExtendedView extends RelativeLayout
 
     //Start initUI-------------------------------------------------------------
     private void initUI() {
-        btnEnableVirtualStick = (Button) findViewById(R.id.btn_enable_virtual_stick);
-        btnDisableVirtualStick = (Button) findViewById(R.id.btn_disable_virtual_stick);
-        btnActivateControlModes = (Button) findViewById(R.id.btn_activate_control_modes);
-        btnDeactivateControlModes = (Button) findViewById(R.id.btn_deactivate_control_modes);
         btnTakeOff = (Button) findViewById(R.id.btn_take_off);
         btnLand = (Button) findViewById(R.id.btn_land);
         btnShootPhoto = (Button) findViewById(R.id.btn_shoot_photo);
-        btnStartVideo = (Button) findViewById(R.id.btn_start_video);
-        btnStopVideo = (Button) findViewById(R.id.btn_stop_video);
         btnMissions = (Button) findViewById(R.id.btn_missions);
         btnMedia = (Button) findViewById(R.id.btn_media);
 
@@ -200,22 +168,14 @@ public class FlightCustomExtendedView extends RelativeLayout
         btnRecordVideo = (ToggleButton) findViewById(R.id.btn_record_video);
 
         textView = (TextView) findViewById(R.id.textview_simulator);
-        textView_Controls = (TextView) findViewById(R.id.textview_control_modes);
-        textView_VirtualSticks = (TextView) findViewById(R.id.textview_virtual_stick);
         textView_Video = (TextView) findViewById(R.id.textview_video_record);
 
 
-        btnEnableVirtualStick.setOnClickListener(this);
-        btnDisableVirtualStick.setOnClickListener(this);
-        btnActivateControlModes.setOnClickListener(this);
-        btnDeactivateControlModes.setOnClickListener(this);
         btnTakeOff.setOnClickListener(this);
         btnLand.setOnClickListener(this);
-        btnSimulator.setOnCheckedChangeListener(FlightCustomExtendedView.this);
+        btnSimulator.setOnCheckedChangeListener(FlightCustomFinalView.this);
 
         btnShootPhoto.setOnClickListener(this);
-        btnStartVideo.setOnClickListener(this);
-        btnStopVideo.setOnClickListener(this);
         btnMissions.setOnClickListener(this);
         btnMedia.setOnClickListener(this);
 
@@ -384,56 +344,25 @@ public class FlightCustomExtendedView extends RelativeLayout
         }
         switch (v.getId()) {
 
-            case R.id.btn_enable_virtual_stick:
-                enableVirtualStick();
-                break;
-
-            case R.id.btn_disable_virtual_stick:
-                disableVirtualStick();
-                break;
-
-
-            case R.id.btn_activate_control_modes:
-                enableControlModes();
-                break;
-
-
-            case R.id.btn_deactivate_control_modes:
-                disableControlModes();
-                break;
-
-
             case R.id.btn_take_off:
                 takeOff();
                 break;
-
 
             case R.id.btn_land:
                 autoLand();
                 break;
 
-
             case R.id.btn_shoot_photo:
                 shootPhoto();
                 break;
 
-
-            case R.id.btn_start_video:
-                toVideoMode();
-                startRecording();
-                break;
-
-
-            case R.id.btn_stop_video:
-                stopRecording();
-                toPhotoMode();
-                break;
-
-
             case R.id.btn_missions:
-                //This might fail, because of getContext() instead of "this"!
                 Intent intent = new Intent(getContext(), LoadMission.class);
                 getContext().startActivity(intent);
+                break;
+
+            case R.id.btn_media:
+                ToastUtils.setResultToToast("Not implemented yet");
                 break;
 
             default:
@@ -505,36 +434,20 @@ public class FlightCustomExtendedView extends RelativeLayout
     }
 
 
-
-    // Shoot single photo
+    //Shoot single photo
     private void shootPhoto() {
-        //Shoot Photo Button
-        if (isModuleAvailable()) {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    btnShootPhoto.setEnabled(false);
-                }
-            });
 
+        if (isModuleAvailable()) {
             DJISampleApplication.getProductInstance()
                     .getCamera()
                     .startShootPhoto(new CommonCallbacks.CompletionCallback() {
                         @Override
                         public void onResult(DJIError djiError) {
                             if (null == djiError) {
-                                ToastUtils.setResultToToast("take photo: success");
-                                //getContext().getString(R.string.success
+                                ToastUtils.setResultToToast("Photo taken");
                             } else {
                                 ToastUtils.setResultToToast(djiError.getDescription());
                             }
-                            post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    btnShootPhoto.setEnabled(true);
-                                }
-                            });
-
                         }
                     });
         }
@@ -557,10 +470,7 @@ public class FlightCustomExtendedView extends RelativeLayout
         }
         btnShootPhoto.setClickable(false);
         btnRecordVideo.setClickable(true);
-        btnStartVideo.setClickable(true);
-        btnStopVideo.setClickable(true);
     }
-
 
 
     // Activate Photo Mode
@@ -577,8 +487,6 @@ public class FlightCustomExtendedView extends RelativeLayout
                             });
         }
         btnRecordVideo.setClickable(false);
-        btnStartVideo.setClickable(false);
-        btnStopVideo.setClickable(false);
         btnShootPhoto.setClickable(true);
     }
 
@@ -586,7 +494,7 @@ public class FlightCustomExtendedView extends RelativeLayout
 
     // Start recording a video
     private void startRecording(){
-        textView_Video.setText("Recording: 00:00:00");
+        setRecordTime("Recording: 00:00:00");
         btnCameraMode.setClickable(false);
         if (ModuleVerificationUtil.isCameraModuleAvailable()) {
             DJISampleApplication.getProductInstance()
@@ -609,7 +517,7 @@ public class FlightCustomExtendedView extends RelativeLayout
                                                 * 60
                                                 * 60) + (minutes * 60));
                                         time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-                                        textView_Video.setText("Recording:" + time);
+                                        setRecordTime("Recording:" + time);
                                     }
                                 }, 0, 1);
                             }
@@ -628,8 +536,8 @@ public class FlightCustomExtendedView extends RelativeLayout
                     .stopRecordVideo(new CommonCallbacks.CompletionCallback() {
                         @Override
                         public void onResult(DJIError djiError) {
-                            ToastUtils.setResultToToast("StopRecord");
-                            textView_Video.setText("00:00:00");
+                            ToastUtils.setResultToToast("Recording stopped");
+                            setRecordTime("00:00:00");
                             timer.cancel();
                             timeCounter = 0;
                         }
@@ -642,12 +550,10 @@ public class FlightCustomExtendedView extends RelativeLayout
 
     // Enable virtual stick
     private void enableVirtualStick(){
-        textView_VirtualSticks.setText("Virtual Stick enabled.");
-
         flightController.setVirtualStickModeEnabled(true, new CommonCallbacks.CompletionCallback() {
             @Override
             public void onResult(DJIError djiError) {
-                DialogUtils.showDialogBasedOnError(getContext(), djiError);
+                ToastUtils.setResultToToast("Virtual Stick enabled");
             }
         });
     }
@@ -656,12 +562,10 @@ public class FlightCustomExtendedView extends RelativeLayout
 
     // Disable virtual stick
     private void disableVirtualStick(){
-        textView_VirtualSticks.setText("Virtual Stick disabled.");
-
         flightController.setVirtualStickModeEnabled(false, new CommonCallbacks.CompletionCallback() {
             @Override
             public void onResult(DJIError djiError) {
-                DialogUtils.showDialogBasedOnError(getContext(), djiError);
+                ToastUtils.setResultToToast("Virtual Stick disabled");
             }
         });
     }
@@ -670,34 +574,24 @@ public class FlightCustomExtendedView extends RelativeLayout
 
     // Enable control modes
     private void enableControlModes(){
-        textView_Controls.setText("Control Modes enabled.");
-
         flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
         flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
         flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
         flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
 
-        horizontalCoordinateFlag = true;
-        verticalControlModeFlag = true;
-        yawControlModeFlag = true;
-        rollPitchControlModeFlag = true;
+        ToastUtils.setResultToToast("Control Modes enabled");
     }
 
 
 
     // Disable control modes
     private void disableControlModes(){
-        textView_Controls.setText("Control Modes disabled.");
-
         flightController.setRollPitchControlMode(RollPitchControlMode.ANGLE);
         flightController.setYawControlMode(YawControlMode.ANGLE);
         flightController.setVerticalControlMode(VerticalControlMode.POSITION);
         flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.GROUND);
 
-        rollPitchControlModeFlag = false;
-        yawControlModeFlag = false;
-        verticalControlModeFlag = false;
-        horizontalCoordinateFlag = false;
+        ToastUtils.setResultToToast("Control Modes disabled");
     }
 
 
@@ -708,6 +602,7 @@ public class FlightCustomExtendedView extends RelativeLayout
             @Override
             public void onResult(DJIError djiError) {
                 DialogUtils.showDialogBasedOnError(getContext(), djiError);
+                ToastUtils.setResultToToast("Take Off");
             }
         });
     }
@@ -720,6 +615,18 @@ public class FlightCustomExtendedView extends RelativeLayout
             @Override
             public void onResult(DJIError djiError) {
                 DialogUtils.showDialogBasedOnError(getContext(), djiError);
+                ToastUtils.setResultToToast("Start Landing");
+            }
+        });
+    }
+
+
+
+    private void setRecordTime(final String recordTime) {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                textView_Video.setText(recordTime);
             }
         });
     }
