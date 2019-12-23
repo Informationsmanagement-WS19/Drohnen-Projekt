@@ -21,10 +21,12 @@
 
     <string name="success">Success</string>
     <string name="login">Login</string>
-	
-	<!-- Custom Components (New List)-->
-	<string name="component_listview_custom_creations">Custom Creations</string>
-	<string name="custom_creations_drone_control">Drone Control</string>
+
+    <!-- Custom Components (New List)-->
+    <string name="component_listview_custom_creations">Custom Views</string>
+    <string name="custom_creations_drone_control">Drone Control Basic</string>
+    <string name="custom_creations_drone_control_extended">Drone Control Extended</string>
+	<string name="custom_creations_drone_control_final">Drone Control Final</string>
 
     <!-- Component list -->
     <string name="component_listview_component">Component</string>
@@ -301,5 +303,14 @@
     <string name="fetch_file_list">Fetch File List</string>
     <string name="cancel_transmitting">Cancel Transmitting</string>
     <string name="transmit_local_file">Transmit Local File</string>
+
+    <!-- LoadMission -->
+    <string name="app_name">GetRequest</string>
+    <string name="network_failed">No network found</string>
+    <string name="errorOnTV">Oops... something went wrong</string>
+    <string name="btn_Go_Text">Go!</string>
+    <string name="mainHeader">Retrieve Data from DB</string>
+    <string name="InternetGranted">Internet Permission granted</string>
+    <string name="InternetNotGranted">Internet Permission not granted</string>
 
 </resources>
