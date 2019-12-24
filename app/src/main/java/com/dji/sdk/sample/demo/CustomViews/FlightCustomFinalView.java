@@ -1,10 +1,13 @@
 package com.dji.sdk.sample.demo.CustomViews;
 
-
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.graphics.SurfaceTexture;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.view.View;
@@ -22,6 +25,8 @@ import com.dji.sdk.sample.internal.utils.DialogUtils;
 import com.dji.sdk.sample.internal.utils.ModuleVerificationUtil;
 import com.dji.sdk.sample.internal.utils.ToastUtils;
 import com.dji.sdk.sample.internal.view.PresentableView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,12 +50,8 @@ import dji.sdk.codec.DJICodecManager;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.flightcontroller.Simulator;
 
-// Imports Camera/ Video
 
-
-/**
- * Class for virtual stick.
- */
+//-------------------------------------------------------
 public class FlightCustomFinalView extends RelativeLayout
         implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, PresentableView, TextureView.SurfaceTextureListener {
 
@@ -357,8 +358,7 @@ public class FlightCustomFinalView extends RelativeLayout
                 break;
 
             case R.id.btn_missions:
-                Intent intent = new Intent(getContext(), LoadMission.class);
-                getContext().startActivity(intent);
+                getFlightData();
                 break;
 
             case R.id.btn_media:
@@ -436,7 +436,6 @@ public class FlightCustomFinalView extends RelativeLayout
 
     //Shoot single photo
     private void shootPhoto() {
-
         if (isModuleAvailable()) {
             DJISampleApplication.getProductInstance()
                     .getCamera()
@@ -592,6 +591,30 @@ public class FlightCustomFinalView extends RelativeLayout
         flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.GROUND);
 
         ToastUtils.setResultToToast("Control Modes disabled");
+    }
+
+
+
+    //Check permissions (Internet)
+    private boolean checkInternetPermissions(){
+        int checkVal = getContext().checkCallingOrSelfPermission(Manifest.permission.INTERNET);
+        if(checkVal == PackageManager.PERMISSION_GRANTED){
+            return true;
+        }else{
+            ToastUtils.setResultToToast("Internet Permission not granted");
+            return false;
+        }
+    }
+
+
+
+    //Get the flight data from the backend
+    private void getFlightData(){
+        boolean permissions = checkInternetPermissions();
+        if(permissions){
+            Intent intent = new Intent(getContext(), GetFlightData.class);
+            getContext().startActivity(intent);
+        }
     }
 
 
