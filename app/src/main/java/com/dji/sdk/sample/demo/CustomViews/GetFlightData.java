@@ -32,7 +32,7 @@ import android.view.LayoutInflater;
 public class GetFlightData extends AppCompatActivity {
 
     private static final String TAG = "Main Activity ->";
-    TableLayout gpsTable = findViewById(R.id.dataTable);
+    private TableLayout gpsTable;
     private String address = "http://192.168.1.2/droneapp/";
 
 
@@ -40,6 +40,7 @@ public class GetFlightData extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.custom_get_flight_data);
+        gpsTable = (TableLayout) findViewById(R.id.dataTable);
         getDataFromDB();
     }
 
@@ -78,42 +79,43 @@ public class GetFlightData extends AppCompatActivity {
     //Display the flight data
     private void createDataTable(String data){
         //Replace all special character
-        data.replaceAll("},\\{", ";");
-        data.replaceAll("}", "");
-        data.replaceAll("\\[", "");
-        data.replaceAll("]", "");
-        data.replaceAll("\\{", "");
+        data = data.replaceAll("\\}\\,\\{",";");
+        data = data.replaceAll("\\[","");
+        data = data.replaceAll("\\]","");
+        data = data.replaceAll("\\}","");
+        data = data.replaceAll("\\{","");
+
 
         //Splitting all sets
         String [] gpsData = data.split(";");
+
 
         //Add a row per data set
         for (int i = 0; i < gpsData.length; i++){
             TableRow row = new TableRow(this);
             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
             row.setLayoutParams(lp);
-            TextView textView = new TextView(this);
-            textView.setText(gpsData[i]);
-            row.addView(textView);
+            TextView tableText = new TextView(this);
+            tableText.setText(gpsData[i]);
+            row.addView(tableText);
             gpsTable.addView(row, i);
         }
     }
 
 
-    //Dialog for entering the adress
+    //Dialog for entering the address
     private String getAddress(){
 
         //Build new dialog
+        LayoutInflater inflater = this.getLayoutInflater();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Backend Address");
 
-        //Get the dialog´s design
-        View viewInflated = LayoutInflater.from(this).inflate(R.layout.custom_input_address, null);
-        final EditText input = (EditText) viewInflated.findViewById(R.id.input);
-
         //Input Text
+        final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
+        input.setText(address);
 
         //Confirmation button for entering the address
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -127,7 +129,7 @@ public class GetFlightData extends AppCompatActivity {
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                address = "http://192.168.1.2/droneapp/";
+
             }
         });
 
