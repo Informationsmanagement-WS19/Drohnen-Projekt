@@ -362,7 +362,8 @@ public class FlightCustomFinalView extends RelativeLayout
                 break;
 
             case R.id.btn_media:
-                ToastUtils.setResultToToast("Not implemented yet");
+                Intent mediaTyp = new Intent(getContext(),mediaView.class);
+                getContext().startActivity(mediaTyp);
                 break;
 
             default:
