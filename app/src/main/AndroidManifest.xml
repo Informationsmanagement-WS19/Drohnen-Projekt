@@ -35,6 +35,7 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity android:name=".demo.CustomViews.StartMission"></activity>
         <activity android:name=".demo.CustomViews.LoadMission" />
+        <activity android:name=".demo.CustomViews.GetFlightData" />
 
         <uses-library
             android:name="org.apache.http.legacy"
