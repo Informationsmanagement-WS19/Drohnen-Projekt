@@ -25,7 +25,6 @@ import android.app.AlertDialog;
 import android.widget.EditText;
 import android.content.DialogInterface;
 import android.text.InputType;
-import android.view.View;
 import android.view.LayoutInflater;
 
 
@@ -78,7 +77,7 @@ public class GetFlightData extends AppCompatActivity {
 
     //Display the flight data
     private void createDataTable(String data){
-        //Replace all special character
+        //Replace all special characters
         data = data.replaceAll("\\}\\,\\{",";");
         data = data.replaceAll("\\[","");
         data = data.replaceAll("\\]","");
