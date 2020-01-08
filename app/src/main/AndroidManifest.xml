@@ -33,8 +33,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".demo.flightcontroller.StartMission"></activity>
+        <activity android:name=".demo.CustomViews.StartMission"></activity>
         <activity android:name=".demo.CustomViews.LoadMission" />
+        <activity android:name=".demo.CustomViews.GetFlightData" />
+        <activity android:name=".demo.CustomViews.mediaView" />
 
         <uses-library
             android:name="org.apache.http.legacy"

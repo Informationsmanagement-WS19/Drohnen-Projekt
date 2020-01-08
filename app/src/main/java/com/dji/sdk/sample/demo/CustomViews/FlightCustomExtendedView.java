@@ -44,7 +44,6 @@ import dji.sdk.flightcontroller.Simulator;
 // Imports Camera/ Video
 import android.graphics.SurfaceTexture;
 import android.view.TextureView;
-
 import dji.sdk.camera.VideoFeeder;
 import dji.sdk.codec.DJICodecManager;
 import dji.common.camera.SettingsDefinitions;
