@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    //tools:context="com.dji.mediaManagerDemo.MainActivity"
+    //tools:context="com.dji.sdk.sample.demo">
 
 
     <Button
@@ -12,6 +12,7 @@
         android:layout_width="60dp"
         android:layout_height="40dp"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="Back"
         android:textSize="11sp" />
@@ -22,6 +23,7 @@
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/back_btn"
+        android:layout_toRightOf="@+id/back_btn"
         android:text="Delete"
         android:textSize="11sp" />
 
@@ -31,6 +33,7 @@
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/delete_btn"
+        android:layout_toRightOf="@+id/delete_btn"
         android:text="Reload"
         android:textSize="11sp" />
 
@@ -40,6 +43,7 @@
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/reload_btn"
+        android:layout_toRightOf="@+id/reload_btn"
         android:text="Download"
         android:textSize="11sp" />
 
@@ -49,6 +53,7 @@
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/download_btn"
+        android:layout_toRightOf="@+id/download_btn"
         android:text="Status"
         android:textSize="11sp" />
 
@@ -57,6 +62,7 @@
         android:layout_width="60dp"
         android:layout_height="40dp"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_below="@+id/back_btn"
         android:text="Play"
         android:textSize="11sp" />
@@ -67,6 +73,7 @@
         android:layout_height="40dp"
         android:layout_below="@+id/back_btn"
         android:layout_toEndOf="@+id/play_btn"
+        android:layout_toRightOf="@+id/play_btn"
         android:text="Resume"
         android:textSize="11sp" />
 
@@ -76,6 +83,7 @@
         android:layout_height="40dp"
         android:layout_below="@+id/reload_btn"
         android:layout_toEndOf="@+id/resume_btn"
+        android:layout_toRightOf="@+id/resume_btn"
         android:text="Pause"
         android:textSize="11sp" />
 
@@ -85,6 +93,7 @@
         android:layout_height="40dp"
         android:layout_below="@+id/reload_btn"
         android:layout_toEndOf="@+id/pause_btn"
+        android:layout_toRightOf="@+id/pause_btn"
         android:text="Stop"
         android:textSize="11sp" />
 
@@ -94,6 +103,7 @@
         android:layout_height="40dp"
         android:layout_below="@+id/reload_btn"
         android:layout_toEndOf="@+id/stop_btn"
+        android:layout_toRightOf="@+id/stop_btn"
         android:text="MoveTo"
         android:textSize="11sp" />
 
@@ -103,6 +113,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/play_btn"
         android:layout_toStartOf="@+id/pointing_drawer_sd"
+        android:layout_toLeftOf="@+id/pointing_drawer_sd"
         android:id="@+id/FPVWidget" />
 
     <ImageView
@@ -112,6 +123,7 @@
         android:layout_below="@+id/play_btn"
         android:layout_marginTop="0dp"
         android:layout_toStartOf="@+id/pointing_drawer_sd"
+        android:layout_toLeftOf="@+id/pointing_drawer_sd"
         android:background="@color/black_overlay"
         android:visibility="invisible" />
 
@@ -120,7 +132,8 @@
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_marginLeft="0dp"
-        android:layout_toEndOf="@+id/FPVWidget" />
+        android:layout_toEndOf="@+id/FPVWidget"
+        android:layout_toRightOf="@+id/FPVWidget"/>
 
     <SlidingDrawer
         android:id="@+id/pointing_drawer_sd"

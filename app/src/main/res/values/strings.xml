@@ -313,4 +313,6 @@
     <string name="InternetGranted">Internet Permission granted</string>
     <string name="InternetNotGranted">Internet Permission not granted</string>
 
+    <!-- MediaView-->
+    <string name="push_info">Push Info</string>
 </resources>
