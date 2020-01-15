@@ -32,7 +32,7 @@ public class GetFlightData extends AppCompatActivity {
 
     private static final String TAG = "Main Activity ->";
     private TableLayout gpsTable;
-    private String address = "http://192.168.1.2/droneapp/";
+    private String address = "http://192.168.0.101/IM/darstellen.php";
 
 
     @Override
@@ -40,19 +40,19 @@ public class GetFlightData extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.custom_get_flight_data);
         gpsTable = (TableLayout) findViewById(R.id.dataTable);
+        address = getAddress();
+
         getDataFromDB();
     }
 
 
     //Get all data from the entered address
     private void getDataFromDB(){
-        //Dynamic input
-        String jsonURL = getAddress();
 
         //Calling the backend/ entered address
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(jsonURL)
+                .url(address)
                 .build();
 
         Call call = client.newCall(request);

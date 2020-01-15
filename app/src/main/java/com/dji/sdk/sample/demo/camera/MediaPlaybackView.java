@@ -459,7 +459,7 @@ public class MediaPlaybackView extends LinearLayout
 
                 mItemHolder = new ItemHolder();
                 mItemHolder.file_name = (TextView) convertView.findViewById(R.id.filename);
-                mItemHolder.btnPlayVideo = (Button) convertView.findViewById(R.id.btn_PlayVideo);
+                //mItemHolder.btnPlayVideo = (Button) convertView.findViewById(R.id.btn_PlayVideo);
                 convertView.setTag(mItemHolder);
             } else {
                 mItemHolder = (ItemHolder) convertView.getTag();
